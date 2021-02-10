@@ -1,3 +1,6 @@
+from code.sim import sim_log_parse
+
+
 import argparse
 
 
@@ -48,6 +51,22 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Unpack arguments
+
+    data_sim_log = args.data_sim_log
+
+
+
+
+    # Load data
+
+    if data_sim_log:
+        file_names, steering_angles = sim_log_parse(data_sim_log, 0.0)
+        print(len(file_names), "Files loaded!")
+        print(len(steering_angles), "Angles loaded!")
+
+
 
 
 main()
