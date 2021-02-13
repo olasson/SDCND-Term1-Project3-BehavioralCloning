@@ -1,4 +1,5 @@
 from code.sim import sim_log_parse
+from code.show import show_distribution
 
 
 import argparse
@@ -61,8 +62,9 @@ def main():
     # Unpack arguments
 
     data_sim_log = args.data_sim_log
-
     angle_correction = args.angle_corr
+
+    show_dist = args.show_dist
 
 
 
@@ -77,6 +79,9 @@ def main():
 
 
     # Show data
+    if show_dist and data_sim_log:
+        title = "Angle distribution with " + str(angle_correction) + " angle correction"
+        show_distribution(steering_angles, title = title)
 
 
 
