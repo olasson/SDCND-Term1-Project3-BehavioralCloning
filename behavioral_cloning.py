@@ -1,8 +1,10 @@
-from code.sim import sim_log_parse
+from code.sim import sim_log_parse, sim_find_indices_to_delete
 from code.show import show_distribution
 
 
+import numpy as np
 import argparse
+
 
 
 def main():
@@ -57,19 +59,29 @@ def main():
         help = 'Angle correction applied to images from right and left camera'
     )
 
+
+    parser.add_argument(
+        '--angle_flatten',
+        type = float,
+        nargs = '?',
+        default = 2.5,
+        help = 'Flattening factor applied to angle distribution. Higher, more flat. Lower, less flat.'
+    )
+
     args = parser.parse_args()
 
     # Unpack arguments
 
     data_sim_log = args.data_sim_log
+
     angle_correction = args.angle_corr
+    angle_flatten = args.angle_flatten
 
     show_dist = args.show_dist
 
 
 
-
-    # Load data
+    # ---------- Load data ---------- #
 
     if data_sim_log:
         file_names, steering_angles = sim_log_parse(data_sim_log, angle_correction)
@@ -77,11 +89,14 @@ def main():
         print(len(steering_angles), "Angles loaded!")
 
 
-
-    # Show data
-    if show_dist and data_sim_log:
-        title = "Angle distribution with " + str(angle_correction) + " angle correction"
-        show_distribution(steering_angles, title = title)
+        # Show data
+        if show_dist:
+            if angle_flatten != 1.0:
+                indices_to_delete = sim_find_indices_to_delete(steering_angles, 'auto', angle_flatten)
+                steering_angles = np.delete(steering_angles, indices_to_delete)
+            title = ("Angle distribution | " + str(angle_correction) + " angle correction | " + 
+                     str(angle_flatten) + " flattening factor.")
+            show_distribution(steering_angles, title = title)
 
 
 
