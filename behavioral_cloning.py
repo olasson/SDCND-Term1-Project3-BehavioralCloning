@@ -42,12 +42,18 @@ def main():
     )
 
     parser.add_argument(
-        '--show',
-        default = None,
-        type = str,
-        nargs = '*',
-        choices = ['images', 'dist', 'pred'],
-        help = 'Visualize images, distributions or model predictions.'
+        '--show_dist',
+        action = 'store_true',
+        help = 'Show angle distribution.'
+    )
+
+
+    parser.add_argument(
+        '--angle_corr',
+        type = float,
+        nargs = '?',
+        default = 0.15,
+        help = 'Angle correction applied to images from right and left camera'
     )
 
     args = parser.parse_args()
@@ -56,15 +62,21 @@ def main():
 
     data_sim_log = args.data_sim_log
 
+    angle_correction = args.angle_corr
+
 
 
 
     # Load data
 
     if data_sim_log:
-        file_names, steering_angles = sim_log_parse(data_sim_log, 0.0)
+        file_names, steering_angles = sim_log_parse(data_sim_log, angle_correction)
         print(len(file_names), "Files loaded!")
         print(len(steering_angles), "Angles loaded!")
+
+
+
+    # Show data
 
 
 
