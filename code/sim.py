@@ -28,26 +28,3 @@ def sim_log_parse(path_sim_log, angle_correction):
     steering_angles = np.array(steering_angles)
 
     return file_names, steering_angles
-
-
-def sim_find_indices_to_delete(steering_angles, n_bins, flatten_factor):
-
-    values, bins = np.histogram(steering_angles, n_bins)
-    max_number_of_angles = (np.mean(values) * flatten_factor).astype('uint32')
-
-    indices_to_delete = []
-
-    for i, bin_right in enumerate(bins[1:]):
-        bin_left = bins[i]
-        if i == (len(bins) - 2):
-            bin_angles = np.where((steering_angles >= bin_left) & (steering_angles <= bin_right))
-        else:
-            bin_angles = np.where((steering_angles >= bin_left) & (steering_angles < bin_right))
-        if (len(bin_angles[0]) > max_number_of_angles):
-            n_deletes = len(bin_angles[0]) - max_number_of_angles
-            delete_index = np.random.choice(bin_angles[0], size = n_deletes, replace = False)
-            indices_to_delete.extend(delete_index)
-
-    indices_to_delete = np.array(indices_to_delete)
-
-    return indices_to_delete
