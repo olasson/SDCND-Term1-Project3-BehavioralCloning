@@ -1,5 +1,7 @@
-from code.sim import sim_log_parse, sim_find_indices_to_delete
+from code.sim import sim_log_parse
 from code.show import show_distribution
+from code.prepare import prepare_data
+from code.helpers import find_indices_to_delete
 
 
 import numpy as np
@@ -68,6 +70,12 @@ def main():
         help = 'Flattening factor applied to angle distribution. Higher, more flat. Lower, less flat.'
     )
 
+    parser.add_argument(
+        '--prepare_data',
+        action = 'store_true',
+        help = 'Prepare data for use by model'
+    )
+
     args = parser.parse_args()
 
     # Unpack arguments
@@ -78,6 +86,8 @@ def main():
     angle_flatten = args.angle_flatten
 
     show_dist = args.show_dist
+
+    prepare_data = args.prepare_data
 
 
 
@@ -92,13 +102,15 @@ def main():
         # Show data
         if show_dist:
             if angle_flatten != 1.0:
-                indices_to_delete = sim_find_indices_to_delete(steering_angles, 'auto', angle_flatten)
+                indices_to_delete = find_indices_to_delete(steering_angles, 'auto', angle_flatten)
                 steering_angles = np.delete(steering_angles, indices_to_delete)
             title = ("Angle distribution | " + str(angle_correction) + " angle correction | " + 
                      str(angle_flatten) + " flattening factor.")
             show_distribution(steering_angles, title = title)
 
 
+        if prepare_data:
+            print("Preparing data...")
 
 
 main()
